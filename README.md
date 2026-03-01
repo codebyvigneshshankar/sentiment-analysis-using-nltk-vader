@@ -64,5 +64,10 @@ Chart.js Visualization
 5. The result is returned as JSON and visualized as a bar chart.
 
 ---
+## Screenshot
 
-"# sentiment-analysis-using-nltk-vader" 
+![App Screenshot](images/positive_sentiment.jpg)
+
+![App Screenshot](images/negative_sentiment.jpg)
+
+---
