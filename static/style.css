@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    text-align: center;
+    padding: 30px;
+}
+.container {
+    width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+#sentimentLabel {
+    font-weight: bold;
+    padding: 4px 10px;
+    border-radius: 5px;
+}
+#sentimentLabel.positive { color: white; background-color: green; }
+#sentimentLabel.negative { color: white; background-color: red; }
+#sentimentLabel.neutral  { color: black; background-color: lightgray; }

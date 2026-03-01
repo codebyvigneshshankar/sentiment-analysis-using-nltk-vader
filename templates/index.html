@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sentiment Analyzer</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Text Sentiment Analyzer</h1>
+      <form id="sentimentForm" enctype="multipart/form-data">
+        <textarea
+          name="text"
+          id="text"
+          placeholder="Type your text here..."
+        ></textarea>
+        <p>OR upload a text file:</p>
+        <input type="file" name="file" id="fileInput" />
+        <button type="submit">Analyze Sentiment</button>
+      </form>
+      <div id="result" style="display: none">
+        <h2>Sentiment: <span id="sentimentLabel"></span></h2>
+        <canvas id="sentimentChart"></canvas>
+      </div>
+    </div>
+
+    <script>
+      // document is a global object sent from the browser that represent the current html page
+      const form = document.getElementById("sentimentForm");
+      const resultDiv = document.getElementById("result");
+      const sentimentLabel = document.getElementById("sentimentLabel");
+      const ctx = document.getElementById("sentimentChart").getContext("2d");
+      let chart;
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const fileInput = document.getElementById("fileInput");
+        const textInput = document.getElementById("text");
+
+        // FormData is a built-in javascript class provided by browser
+        // the browser automatically reads all inputs, text areas, selects etc when you pass the form
+        const formData = new FormData();
+
+        if (fileInput.files.length > 0) {
+          formData.append("file", fileInput.files[0]);
+        } else if (textInput.value.trim() !== "") {
+          formData.append("text", textInput.value.trim());
+        } else {
+          alert("Please enter text or upload a file.");
+          return;
+        }
+
+        // Sends the form data to your Flask backend at /analyze.
+        // Waits for a JSON response from Python (sentiment + scores).
+        const response = await fetch("/analyze", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          alert(data.error);
+          return;
+        }
+
+        sentimentLabel.textContent = data.sentiment;
+        sentimentLabel.className = data.sentiment.toLowerCase();
+
+        const scores = data.scores;
+
+        if (chart) chart.destroy();
+        chart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: ["Positive", "Negative", "Neutral"],
+            datasets: [
+              {
+                label: "Sentiment Scores",
+                data: [scores.Positive, scores.Negative, scores.Neutral],
+                backgroundColor: ["green", "red", "gray"],
+              },
+            ],
+          },
+        });
+
+        resultDiv.style.display = "block";
+      });
+    </script>
+  </body>
+</html>
